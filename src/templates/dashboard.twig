@@ -1,0 +1,110 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Download Form plugin for Craft CMS 3.x
+ *
+ * Download Form index.twig
+ *
+ * @author    Pixel&Code
+ * @copyright Copyright (c) 2019 Pixel&Code
+ * @link      https://www.pixelcode.nl
+ * @package   DownloadForm
+ * @since     2.0.0
+ */
+#}
+
+{% extends "_layouts/cp" %}
+
+{% do view.registerAssetBundle("pixelcode\\downloadform\\assetbundles\\downloadform\\DownloadFormAsset") %}
+{% do view.registerAssetBundle("pixelcode\\downloadform\\assetbundles\\indexcpsection\\IndexCPSectionAsset") %}
+
+{% set docsUrl = "https://github.com/PixelCodeNL/download-form/blob/master/README.md" %}
+
+{% set title = "Download requests" | t('download-form') %}
+
+{% set page = craft.app.request.getQueryParam('page', 1) %}
+{% set downloadRequests = craft.downloadForm.downloadRequests(page) %}
+{% set totalPages = craft.downloadForm.totalDownloadRequestPages %}
+
+{% set content %}
+    {% if downloadRequests is not empty %}
+
+        <table class="fullwidth data">
+            <thead>
+            <tr>
+                <th>{{ 'Date' | t('download-form') }}</th>
+                <th>{{ 'Name' | t('download-form') }}</th>
+                <th>{{ 'Email address' | t('download-form') }}</th>
+                <th>{{ 'Subscribed to MailChimp' | t('download-form') }}</th>
+                <th>{{ 'Page' | t('download-form') }}</th>
+                <th>{{ 'File' | t('download-form') }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for downloadRequest in downloadRequests %}
+                <tr>
+                    <td>{{ downloadRequest.date | datetime }}</td>
+                    <td>{{ downloadRequest.name }}</td>
+                    <td>{{ downloadRequest.email }}</td>
+                    <td>
+                        {% set listTitle = downloadRequest.mailChimpSubscribe and downloadRequest.mailChimpList is not empty ?
+                            ('list' | t('download-form')) ~ ' ' ~ downloadRequest.mailChimpList
+                        %}
+                        <span title="{{ listTitle }}">
+                            {{ downloadRequest.mailChimpSubscribe ? ('Yes' | t('download-form')) : ('No' | t('download-form')) }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{{ downloadRequest.pageUrl }}" target="_blank" data-icon-after="rightangle" title="{{ 'Visit webpage' | t('download-form') }}">{{ ('Visit page' | t('download-form')) }}&nbsp;&nbsp;</a>
+                    </td>
+                    <td>
+                        <a href="{{ downloadRequest.file }}" target="_blank">
+                            {{ downloadRequest.file | split('/') | last | split('?') | first }}
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        {% if totalPages > 1 %}
+            <div class="pagination-wrapper">
+                <div class="pages-count">{{ ('pagination.pageXofX' | t('download-form', { currentPage: page, totalPages: totalPages })) }}</div>
+                    <ul class="paginator">
+                        {% set startPage = 1 %}
+                        {% set endPage = totalPages %}
+
+                        {% if page > 1 %}
+                            <li><a href="?page={{ page - 1 }}"> < </a></li>
+                        {% endif %}
+
+                        {% for pageNumber in range(startPage, endPage) %}
+                            {% set isCurrentPage = page == pageNumber %}
+
+                            {% if loop.index == page or (loop.index < page and page - loop.index <= 2) or (loop.index > page and loop.index - page <= 2)  %}
+                                <li class="{{ isCurrentPage ? 'active' }}">
+                                    {% if not isCurrentPage %}
+                                        <a href="?page={{ pageNumber }}">
+                                            {% endif %}
+                                            {{ pageNumber }}
+                                            {% if not isCurrentPage %}
+                                        </a>
+                                    {% endif %}
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page < totalPages %}
+                            <li><a href="?page={{ page + 1 }}"> > </a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+
+    {% else %}
+        <p>
+            {{ 'There are no downloads' | t('download-form') }}
+        </p>
+    {% endif %}
+{% endset %}

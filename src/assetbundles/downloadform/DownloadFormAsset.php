@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2019 Pixel&Code
  */
 
-namespace pixelcode\downloadform\assetbundles\downloadformfieldfield;
+namespace pixelcode\downloadform\assetbundles\DownloadForm;
 
 use Craft;
 use craft\web\AssetBundle;
@@ -19,28 +19,25 @@ use craft\web\assets\cp\CpAsset;
  * @package   DownloadForm
  * @since     2.0.0
  */
-class DownloadFormFieldFieldAsset extends AssetBundle
+class DownloadFormAsset extends AssetBundle
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
     public function init()
     {
-        $this->sourcePath = "@pixelcode/downloadform/assetbundles/downloadformfieldfield/dist";
+        $this->sourcePath = "@pixelcode/downloadform/assetbundles/downloadform/dist";
 
         $this->depends = [
             CpAsset::class,
         ];
 
         $this->js = [
-            'js/DownloadFormField.js',
+            'js/DownloadForm.js',
         ];
 
         $this->css = [
-            'css/DownloadFormField.css',
+            'css/DownloadForm.css',
         ];
 
         parent::init();

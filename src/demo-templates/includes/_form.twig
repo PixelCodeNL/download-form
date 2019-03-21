@@ -1,0 +1,94 @@
+<style>
+    {% include '_download-form-demo/includes/_form.css.twig' %}
+</style>
+
+{% set infoMessage = '' %}
+{% set titleClass = titleClass is defined ? titleClass : 'align-center' %}
+
+{% if entry is defined %}
+    {% if entry[fieldHandle] is defined %}
+        {% set downloadFormSettings = entry[fieldHandle] %}
+
+        {% if downloadFormSettings is defined and downloadFormSettings is not empty %}
+            {% if craft.downloadForm.getDownloadAssetSource() %}
+                {% if downloadFormSettings.enabled and downloadFormSettings.file is not empty %}
+
+                    {% if downloadFormSettings.thanksUrl is not empty %}
+                        <script type="text/javascript">
+                            function socialTracking(){
+                                fbq('track', 'Lead');
+                                ga('send', 'pageview', '{{ downloadFormSettings.thanksUrl }}');
+                            }
+                        </script>
+                    {% endif %}
+
+                    <div class="download-form-wrapper {% if stylePage is not defined %}block full-width{% endif %}">
+                        {% if downloadFormSettings.title is not empty %}
+                            <h2>{{ downloadFormSettings.title }}</h2>
+                        {% endif %}
+                        {% if downloadFormSettings.intro is not empty %}
+                            <p>{{ downloadFormSettings.intro | nl2br }}</p>
+                        {% endif %}
+
+                        <div class="form-wrapper">
+                            <form accept-charset="utf-8" name="downloadForm" class="quform download-form" role="form" method="post">
+                                <input type="hidden" name="action" value="download-form/form/submit"/>
+                                <input type="hidden" name="downloadForm[entry]" value="{{ entry.id }}" />
+                                {{ csrfInput() }}
+
+                                <div class="text-danger errors"></div>
+                                <div class="loader"><span class="fa fa-spinner fa-spin"></span>{{ 'Sending...' | t('download-form') }}</div>
+                                <div class="fields">
+                                    <div class="quform-elements">
+                                        <div class="form-row">
+                                            <div class="quform-element gdlr-core-column-30 inline">
+                                                <label for="name">{{ 'Name' | t('download-form') }} *</label>
+                                                <input type="text" name="downloadForm[name]" class="input1" id="fromName" placeholder="{{ 'Your name...' | t('download-form') }}" required/>
+                                            </div>
+                                            <div class="quform-element gdlr-core-column-30 inline">
+                                                <label for="email">{{ 'Email address' | t('download-form') }} *</label>
+                                                <input type="email" name="downloadForm[email]" class="input1" id="fromEmail" placeholder="{{ 'Your email address...' | t('download-form') }}" required/>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="quform-element gdlr-core-column-30 inline">
+                                                {% if isMailChimpAvailable and downloadFormSettings.mailChimp %}
+                                                    <input type="hidden" name="downloadForm[mailChimpList]" value="{{ downloadFormSettings.mailChimpList }}">
+                                                    <div class="checkbox hidden-mailchimp">
+                                                        <label><input type="checkbox" name="downloadForm[mailChimpSubscribe]" value="1" checked> {{ 'Subscribe me for the newsletter' | t }}</label>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="quform-submit">
+                                            <div class="quform-submit-inner inline">
+                                                <button type="submit" class="submit-button" id="contactbutton">Verstuur en download <span class="fa fa-angle-right"></span></button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="download">
+                                    <i>
+                                        {{ 'Download your file below' | t('download-form') }}
+                                    </i>
+                                    <a href="#" target="_blank" class="download-link button icon dark-brown" rel="nofollow" onclick="socialTracking()">Download brochure <span class="fa fa-download"></span></a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                {% endif %}
+            {% else %}
+                {% set infoMessage = 'No download asset source set in settings' %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% else %}
+    {% set infoMessage = 'Download form template included, but no entry defined' %}
+{% endif %}
+
+{% if infoMessage is not empty %}
+    {% set jsInfoMessage = 'console.info("[Download Form] ' ~ infoMessage ~ '");' %}
+    {% js jsInfoMessage %}
+{% endif %}

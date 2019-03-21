@@ -10,26 +10,50 @@
 
 namespace pixelcode\downloadform\records;
 
-use pixelcode\downloadform\DownloadForm;
-
-use Craft;
+use craft\fields\Date;
 use craft\db\ActiveRecord;
 
 /**
+ * Class DownloadFormRecord
+ *
  * @author    Pixel&Code
  * @package   DownloadForm
  * @since     2.0.0
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property int $entry
+ * @property boolean $mailChimpSubscribe
+ * @property string|null $mailChimpList
+ * @property string $sessionId
+ * @property string $file
+ * @property string $ip
+ * @property Date $date
  */
+
 class DownloadFormRecord extends ActiveRecord
 {
-    // Public Static Methods
-    // =========================================================================
+    public static $tableName = '{{%downloadform_download_request}}';
+
+    public $name = '';
+    public $email = '';
+    public $entry = '';
+    public $mailChimpSubscribe = false;
+    public $mailChimpList = '';
+    public $sessionId = '';
+    public $thanksUrl = '';
+    public $file = '';
+    public $ip = '';
+    public $date = '';
+
+
 
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return '{{%downloadform_downloadformrecord}}';
+        return self::$tableName;
     }
 }

@@ -10,9 +10,6 @@
 
 namespace pixelcode\downloadform\models;
 
-use pixelcode\downloadform\DownloadForm;
-
-use Craft;
 use craft\base\Model;
 
 /**
@@ -20,18 +17,14 @@ use craft\base\Model;
  * @package   DownloadForm
  * @since     2.0.0
  */
-class DownloadFormModel extends Model
+class Settings extends Model
 {
-    // Public Properties
-    // =========================================================================
-
     /**
      * @var string
      */
-    public $someAttribute = 'Some Default';
-
-    // Public Methods
-    // =========================================================================
+    public $downloadAssetSource = '';
+    public $notificationEmail = '';
+    public $mailChimpList = '';
 
     /**
      * @inheritdoc
@@ -39,8 +32,9 @@ class DownloadFormModel extends Model
     public function rules()
     {
         return [
-            ['someAttribute', 'string'],
-            ['someAttribute', 'default', 'value' => 'Some Default'],
+            ['downloadAssetSource', 'number'],
+            ['notificationEmail', 'string'],
+            ['mailChimpList', 'string']
         ];
     }
 }

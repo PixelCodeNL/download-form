@@ -1,7 +1,7 @@
 /**
  * Download Form plugin for Craft CMS
  *
- * DownloadFormField Field CSS
+ * Download Form JS
  *
  * @author    Pixel&Code
  * @copyright Copyright (c) 2019 Pixel&Code

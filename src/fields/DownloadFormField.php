@@ -11,12 +11,13 @@
 namespace pixelcode\downloadform\fields;
 
 use pixelcode\downloadform\DownloadForm;
-use pixelcode\downloadform\assetbundles\downloadformfieldfield\DownloadFormFieldFieldAsset;
+use pixelcode\downloadform\assetbundles\downloadformfield\DownloadFormFieldAsset;
 
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
-use craft\helpers\Db;
+use pixelcode\downloadform\models\Form;
+use yii\base\InvalidConfigException;
 use yii\db\Schema;
 use craft\helpers\Json;
 
@@ -27,39 +28,12 @@ use craft\helpers\Json;
  */
 class DownloadFormField extends Field
 {
-    // Public Properties
-    // =========================================================================
-
-    /**
-     * @var string
-     */
-    public $someAttribute = 'Some Default';
-
-    // Static Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
     public static function displayName(): string
     {
-        return Craft::t('download-form', 'DownloadFormField');
-    }
-
-    // Public Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        $rules = parent::rules();
-        $rules = array_merge($rules, [
-            ['someAttribute', 'string'],
-            ['someAttribute', 'default', 'value' => 'Some Default'],
-        ]);
-        return $rules;
+        return Craft::t('download-form', 'Download form');
     }
 
     /**
@@ -67,22 +41,31 @@ class DownloadFormField extends Field
      */
     public function getContentColumnType(): string
     {
-        return Schema::TYPE_STRING;
+        return Schema::TYPE_TEXT;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function normalizeValue($value, ElementInterface $element = null)
     {
+        if ($value instanceof Form) {
+            return $value;
+        }
+
+        if (is_string($value)) {
+            $value = Json::decodeIfJson($value);
+        }
+
         return $value;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function serializeValue($value, ElementInterface $element = null)
     {
+        if ($value instanceof Form) {
+            return $value;
+        }
+
         return parent::serializeValue($value, $element);
     }
 
@@ -101,16 +84,31 @@ class DownloadFormField extends Field
     }
 
     /**
-     * @inheritdoc
+     * @param Form $value
+     * @param ElementInterface|null $element
+     *
+     * @return string
+     * @throws InvalidConfigException
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      */
     public function getInputHtml($value, ElementInterface $element = null): string
     {
+        if (!$element) return '';
+
         // Register our asset bundle
-        Craft::$app->getView()->registerAssetBundle(DownloadFormFieldFieldAsset::class);
+        Craft::$app->getView()->registerAssetBundle(DownloadFormFieldAsset::class);
 
         // Get our id and namespace
         $id = Craft::$app->getView()->formatInputId($this->handle);
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
+
+        $services = DownloadForm::getInstance()->downloadFormService;
+        $isMailChimpAvailable = $services->isMailChimpAvailable();
+        $downloadAssetSource = $services->getDownloadAssetSource();
+        $settings = DownloadForm::getInstance()->getSettings();
+        $globalMailChimpListId = $settings['mailChimpList'];
 
         // Variables to pass down to our field JavaScript to let it namespace properly
         $jsonVars = [
@@ -118,9 +116,9 @@ class DownloadFormField extends Field
             'name' => $this->handle,
             'namespace' => $namespacedId,
             'prefix' => Craft::$app->getView()->namespaceInputId(''),
-            ];
+        ];
         $jsonVars = Json::encode($jsonVars);
-        Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').DownloadFormDownloadFormField(" . $jsonVars . ");");
+        Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').DownloadFormField(" . $jsonVars . ");");
 
         // Render the input template
         return Craft::$app->getView()->renderTemplate(
@@ -131,6 +129,9 @@ class DownloadFormField extends Field
                 'field' => $this,
                 'id' => $id,
                 'namespacedId' => $namespacedId,
+                'isMailChimpAvailable' => $isMailChimpAvailable,
+                'downloadAssetSource' => $downloadAssetSource,
+                'globalMailChimpListId' => $globalMailChimpListId
             ]
         );
     }

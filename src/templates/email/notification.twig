@@ -1,0 +1,24 @@
+{% set entry = craft.entries.id(downloadRequest.entry).one() %}
+
+<html>
+    <body>
+        <h1>{{ 'New download request' | t('download-form') }}</h1>
+
+        <dl>
+            <dt>{{ 'Name' | t('download-form') }}:</dt>
+            <dd>{{ downloadRequest.name }}</dd>
+
+            <dt>{{ 'Email address' | t('download-form') }}:</dt>
+            <dd>{{ downloadRequest.email }}</dd>
+
+            <dt>{{ 'Page' | t('download-form')}}:</dt>
+            <dd>{{ entry ? entry.title : ('Unknown' | t('download-form')) }}</dd>
+
+            <dt>{{ 'Subscribed to MailChimp' | t('download-form') }}:</dt>
+            <dd>{{ downloadRequest.mailChimpSubscribe ? ('Yes' | t('download-form')) : ('No' | t('download-form')) }}</dd>
+
+            <dt>{{ 'File' | t('download-form') }}:</dt>
+            <dd>{{ downloadRequest.file }}</dd>
+        </dl>
+    </body>
+</html>

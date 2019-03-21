@@ -32,8 +32,8 @@
     "extra": {
         "name": "Download Form",
         "handle": "download-form",
-        "hasCpSettings": false,
-        "hasCpSection": false,
+        "hasCpSettings": true,
+        "hasCpSection": true,
         "changelogUrl": "https://raw.githubusercontent.com/PixelCodeNL/download-form/master/CHANGELOG.md",
         "components": {
             "downloadFormService": "pixelcode\\downloadform\\services\\DownloadFormService"

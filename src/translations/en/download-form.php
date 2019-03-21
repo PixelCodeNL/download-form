@@ -14,5 +14,5 @@
  * @since     2.0.0
  */
 return [
-    'Download Form plugin loaded' => 'Download Form plugin loaded',
+    'pagination.pageXofX' => 'Page {currentPage} of {totalPages}',
 ];

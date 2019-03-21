@@ -10,11 +10,10 @@
 
 namespace pixelcode\downloadform\migrations;
 
-use pixelcode\downloadform\DownloadForm;
-
 use Craft;
-use craft\config\DbConfig;
 use craft\db\Migration;
+use pixelcode\downloadform\records\DownloadFormRecord;
+use Solspace\Commons\Migrations\ForeignKey;
 
 /**
  * @author    Pixel&Code
@@ -23,16 +22,10 @@ use craft\db\Migration;
  */
 class Install extends Migration
 {
-    // Public Properties
-    // =========================================================================
-
     /**
      * @var string The database driver to use
      */
     public $driver;
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
@@ -41,7 +34,6 @@ class Install extends Migration
     {
         $this->driver = Craft::$app->getConfig()->getDb()->driver;
         if ($this->createTables()) {
-            $this->createIndexes();
             $this->addForeignKeys();
             // Refresh the db schema caches
             Craft::$app->db->schema->refresh();
@@ -72,18 +64,28 @@ class Install extends Migration
     {
         $tablesCreated = false;
 
-        $tableSchema = Craft::$app->db->schema->getTableSchema('{{%downloadform_downloadformrecord}}');
+        $tableSchema = Craft::$app->db->schema->getTableSchema(DownloadFormRecord::$tableName);
         if ($tableSchema === null) {
             $tablesCreated = true;
             $this->createTable(
-                '{{%downloadform_downloadformrecord}}',
+                DownloadFormRecord::$tableName,
                 [
                     'id' => $this->primaryKey(),
+                    'name' => $this->string(255)->notNull(),
+                    'email' => $this->string(255)->notNull(),
+                    'pageUrl' => $this->string(255)->notNull(),
+                    'entry' => $this->integer(255)->null(),
+                    'mailChimpSubscribe' => $this->boolean(),
+                    'mailChimpList' => $this->string(255)->null(),
+                    'thanksUrl' => $this->string(255)->null(),
+                    'sessionId' => $this->string(255)->notNull(),
+                    'file' => $this->string(255)->notNull(),
+                    'ip' => $this->string(255)->notNull(),
+                    'date' => $this->dateTime()->notNull(),
                     'dateCreated' => $this->dateTime()->notNull(),
                     'dateUpdated' => $this->dateTime()->notNull(),
+                    'siteId' => $this->integer()->null(),
                     'uid' => $this->uid(),
-                    'siteId' => $this->integer()->notNull(),
-                    'some_field' => $this->string(255)->notNull()->defaultValue(''),
                 ]
             );
         }
@@ -94,40 +96,26 @@ class Install extends Migration
     /**
      * @return void
      */
-    protected function createIndexes()
-    {
-        $this->createIndex(
-            $this->db->getIndexName(
-                '{{%downloadform_downloadformrecord}}',
-                'some_field',
-                true
-            ),
-            '{{%downloadform_downloadformrecord}}',
-            'some_field',
-            true
-        );
-        // Additional commands depending on the db driver
-        switch ($this->driver) {
-            case DbConfig::DRIVER_MYSQL:
-                break;
-            case DbConfig::DRIVER_PGSQL:
-                break;
-        }
-    }
-
-    /**
-     * @return void
-     */
     protected function addForeignKeys()
     {
         $this->addForeignKey(
-            $this->db->getForeignKeyName('{{%downloadform_downloadformrecord}}', 'siteId'),
-            '{{%downloadform_downloadformrecord}}',
+            $this->db->getForeignKeyName(DownloadFormRecord::$tableName, 'siteId'),
+            DownloadFormRecord::$tableName,
             'siteId',
             '{{%sites}}',
             'id',
             'CASCADE',
             'CASCADE'
+        );
+
+        $this->addForeignKey(
+            $this->db->getForeignKeyName(DownloadFormRecord::$tableName, 'entry'),
+            DownloadFormRecord::$tableName,
+            'entry',
+            '{{%entries}}',
+            'id',
+            'NO ACTION',
+            'NO ACTION'
         );
     }
 
@@ -143,6 +131,6 @@ class Install extends Migration
      */
     protected function removeTables()
     {
-        $this->dropTableIfExists('{{%downloadform_downloadformrecord}}');
+        $this->dropTableIfExists(DownloadFormRecord::$tableName);
     }
 }
