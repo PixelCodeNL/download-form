@@ -1,0 +1,131 @@
+{% import "_includes/forms" as forms %}
+
+{% if downloadAssetSource %}
+
+<div class="download-form-fields-group">
+    <div class="field enable-switch">
+        <div class="heading">
+            <label class="">{{ 'Show form?' | t('download-form') }}</label>
+        </div>
+        <div class="input ltr">
+            {{ forms.lightswitch({
+                id: id ~ 'enabled',
+                name: name ~ '[enabled]',
+                on: value.enabled is defined ? value.enabled : false
+            }) }}
+        </div>
+    </div>
+
+    <div class="download-form-fields">
+        <div class="field mailchimp-subscribe-switch">
+            <div class="heading">
+                <label class="">{{ 'Subscribe to MailChimp?' | t('download-form') }}</label>
+            </div>
+            <div class="input ltr">
+                {{ forms.lightswitch({
+                    id: id ~ 'mailChimp',
+                    name: name ~ '[mailChimp]',
+                    on: isMailChimpAvailable ? (value.mailChimp is defined ? value.mailChimp : false) : false,
+                    disabled: not isMailChimpAvailable
+                }) }}
+            </div>
+        </div>
+
+        <div class="field mailchimp-field">
+            <div class="heading">
+                <label class="">{{ 'MailChimp list ID' | t('download-form') }}</label>
+                <div class="instructions">
+                    <p>{{ 'Leave blank to use list ID form from global settings' | t('download-form') }}</p>
+                </div>
+            </div>
+            <div class="input ltr">
+                {{ forms.text({
+                    id: id ~ 'mailChimpList',
+                    name: name ~ '[mailChimpList]',
+                    on: isMailChimpAvailable ? (value.mailChimpList is defined ? value.mailChimpList : '') : '',
+                    disabled: not isMailChimpAvailable,
+                    placeholder: isMailChimpAvailable ?
+                    (value.mailChimpList is defined and value.mailChimpList is not empty ?
+                    value.mailChimpList :
+                    globalMailChimpListId) :
+                    ''
+                }) }}
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="heading">
+                <label class="">{{ 'Title' | t('download-form') }}</label>
+                <div class="instructions">
+                    <p>{{ 'Leave blank to disable form title' | t('download-form') }}</p>
+                </div>
+            </div>
+            <div class="input ltr">
+                {{ forms.text({
+                    id: id ~ 'title',
+                    name: name ~ '[title]',
+                    value: value.title is defined ? value.title : '',
+                    required: false,
+                }) }}
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="heading">
+                <label class="">{{ 'Introduction' | t('download-form') }}</label>
+                <div class="instructions">
+                    <p>{{ 'Leave blank to disable introduction text' | t('download-form') }}</p>
+                </div>
+            </div>
+            <div class="input ltr">
+                {{ forms.textarea({
+                    id: id ~ 'intro',
+                    name: name ~ '[intro]',
+                    value: value.intro is defined ? value.intro : '',
+                    required: false,
+                    rows: 4
+                }) }}
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="heading">
+                <label class="">{{ 'File' | t('download-form') }}</label>
+            </div>
+            <div class="input ltr">
+                {{ forms.elementSelectField({
+                    selectionLabel: 'Choose file' | t('download-form') ,
+                    id: id ~ 'file',
+                    name: name ~ '[file]',
+                    elementType: 'craft\\elements\\Asset',
+                    limit: 1,
+                    elements: value.file is defined and value.file is not empty ? craft.assets.id(value.file[0]).all() : null,
+                    criteria: { volumeId: downloadAssetSource.id }
+                }) }}
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="heading">
+                <label class="">{{ 'Thanks url' | t('download-form') }}</label>
+                <div class="instructions">
+                    <p>{{ 'Thanks url for social tracking' | t('download-form') }}</p>
+                </div>
+            </div>
+            <div class="input ltr">
+                {{ forms.text({
+                    id: id ~ 'thanksUrl',
+                    name: name ~ '[thanksUrl]',
+                    value: value.thanksUrl is defined ? value.thanksUrl : '',
+                    required: false,
+                    placeholder: 'e.g. /contact/thanks'| t('download-form'),
+                }) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+    {{ 'The asset source for downloads is not correctly configured.' | t('download-form') }}<br/>
+    <a href="{{ url('download-form/settings') }}" target="_blank">{{ 'Configure it now' | t('download-form') }}</a>
+{% endif %}

@@ -1,0 +1,49 @@
+$(document).ready(function () {
+    var form = $('form.download-form');
+    var setSendingState = function (sending) {
+        if (sending) {
+            form.addClass('sending');
+            form.find('.download-button').prop('disabled', true);
+        } else {
+            form.removeClass('sending');
+            form.find('.download-button').prop('disabled', false);
+        }
+    };
+    form.validate({
+        messages: {
+            'downloadForm[name]': 'Vul uw naam in',
+            'downloadForm[email]': {
+                required: 'Vul uw e-mailadres in',
+                email: 'Vul een correct e-mailadres in'
+            }
+        },
+        submitHandler: function () {
+            setSendingState(true);
+            $.ajax({
+                url: '{{ url('actions/downloadForm/form/submit') }}',
+                method: 'POST',
+                data: form.serializeArray(),
+                beforeSend: function (xhr, settings) {
+                    form.find('.errors').html('');
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    form.find('.errors').html('<p>{{ 'There was an error while sending your request. Please try again later.' | t }}</p>');
+                },
+                success: function (data, textStatus, xhr) {
+                    if (data.success != undefined && data.success == true) {
+                        form.find('.fields').hide();
+                        form.find('.download-link').attr('href', data.url);
+                        form.find('.download').show();
+                    } else {
+                        form.find('.errors').html('<p>{{ 'There was an error while sending your request. Please try again later.' | t }}</p>');
+                    }
+                },
+                complete: function () {
+                    setSendingState(false);
+                }
+            });
+
+            return false;
+        }
+    });
+});

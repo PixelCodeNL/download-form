@@ -1,0 +1,43 @@
+{% extends "download-form/_layouts/_settings" %}
+
+{% import "_includes/forms" as forms %}
+
+{% set title = 'General Settings' | t('download-form')  %}
+{% set selectedSubItem = '' %}
+
+{% block content %}
+    <input type="hidden" name="action" value="plugins/save-plugin-settings">
+    <input type="hidden" name="pluginHandle" value="download-form">
+    {{ redirectInput("download-form/settings") }}
+
+    {% namespace "settings" %}
+        {% do view.registerAssetBundle("pixelcode\\downloadform\\assetbundles\\downloadform\\DownloadFormAsset") %}
+        {% set availableAssetSources = craft.downloadForm.getAllAssetSourcesList() %}
+
+        <h2>{{ 'Settings' | t('download-form') }}</h2>
+        <hr>
+
+        {{ forms.selectField({
+            label: ('Asset source downloads' | t('download-form')),
+            id: 'downloadAssetSource',
+            name: 'downloadAssetSource',
+            value: settings.downloadAssetSource,
+            options: availableAssetSources
+        }) }}
+
+        {{ forms.textField({
+            label: ('Email address for notification' | t('download-form')),
+            id: 'notificationEmail',
+            name: 'notificationEmail',
+            value: settings.notificationEmail
+        }) }}
+
+        {{ forms.textField({
+            label: ('List ID for MailChimp subscription' | t('download-form')),
+            id: 'mailChimpList',
+            name: 'mailChimpList',
+            value: settings.mailChimpList
+        }) }}
+
+    {% endnamespace  %}
+{% endblock %}

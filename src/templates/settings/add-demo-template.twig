@@ -1,0 +1,45 @@
+{% extends "download-form/_layouts/_settings" %}
+
+{% import "_includes/forms" as forms %}
+
+{% set title = 'Demo templates' | t('download-form') %}
+{% set selectedSubItem = 'add-demo-template' %}
+
+{% block content %}
+    <input type="hidden" name="action" value="plugins/save-plugin-settings">
+    <input type="hidden" name="pluginHandle" value="download-form">
+    {{ redirectInput("download-form/settings") }}
+
+        {% do view.registerAssetBundle("pixelcode\\downloadform\\assetbundles\\downloadform\\DownloadFormAsset") %}
+
+        <h2>{{ 'Install demo templates' | t('download-form') }}</h2>
+        <hr>
+        <p>
+            {{ 'Do you want to install the demo templates?' | t('download-form') }}
+        </p>
+        <div>
+            {% if installed is defined and installed %}
+                <hr>
+                <p class="success">
+                    &#10004; {{ 'Demo templates are installed (Folder: _download-form-demo)' | t('download-form') }}
+                </p>
+            {% else %}
+                <form method="post">
+                    <input type="hidden" name="action" value="download-form/settings/add-demo-template-form-submit">
+
+                    <div class="field mailchimp-field">
+                        <div class="heading">
+                            <label class="">{{ 'Install demo templates' | t('download-form') }}</label>
+                            <div class="instructions">
+                                <p>{{ 'Foldername will be "_download-form-demo"' | t('download-form') }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btngroup submit">
+                        <input type="submit" class="btn submit icon add" value=" {{ "Install demo templates" | t('download-form') }}">
+                    </div>
+                </form>
+            {% endif %}
+        </div>
+{% endblock %}

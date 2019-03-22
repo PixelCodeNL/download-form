@@ -1,0 +1,25 @@
+{% extends "_layouts/cp" %}
+
+{% set title = 'Settings' %}
+{% set selectedSubnavItem = 'settings' %}
+{% set fullPageForm = true %}
+{% set subNavItems = craft.downloadForm.settingsSubNavigation %}
+
+{% do view.registerAssetBundle("pixelcode\\downloadform\\assetbundles\\downloadform\\DownloadFormAsset") %}
+{% set availableAssetSources = craft.downloadForm.getAllAssetSourcesList() %}
+
+{% block sidebar %}
+    <nav>
+        <ul>
+            {% for slug, item in subNavItems %}
+                {% if item.heading is defined %}
+                    <li class="heading"><span>{{ item.heading }}</span></li>
+                {% else %}
+                    <li>
+                        <a href="{{ url('download-form/settings/' ~ slug) }}"{% if slug == selectedSubItem %} class="sel"{% endif %}>{{ item.title }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+{% endblock %}

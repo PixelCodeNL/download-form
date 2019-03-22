@@ -1,0 +1,16 @@
+/**
+ * Download Form plugin for Craft CMS
+ *
+ * DownloadFormField Field CSS
+ *
+ * @author    Pixel&Code
+ * @copyright Copyright (c) 2019 Pixel&Code
+ * @link      https://www.pixelcode.nl
+ * @package   DownloadForm
+ * @since     2.0.0
+ */
+
+.selected-file {
+    padding: 10px 0;
+    font-weight: bold;
+}
