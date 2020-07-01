@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2019 Pixel&Code
  */
 
-namespace pixelcode\downloadform\assetbundles\DownloadForm;
+namespace pixelcode\downloadform\assetbundles\downloadform;
 
 use Craft;
 use craft\web\AssetBundle;
