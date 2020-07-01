@@ -59,7 +59,7 @@ class DownloadForm extends Plugin
     public $hasCpSettings = true;
 
     /** @var string */
-    public $schemaVersion = '2.0.0';
+    public $schemaVersion = '3.1.1';
 
 
     /**
