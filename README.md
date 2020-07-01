@@ -74,6 +74,11 @@ Overwrite the custom field handle, default 'downloadForm'.
 
 ## Changelog
 
+### 3.0.1 -- 2020.07.01
+
+* Added support for MailChimp Audience
+* Deprecated listId config setting in favor of audienceId.
+
 ### 2.0.0 -- 2019.03.21
 
 * Completely redesigned the plugin with support for Craft 3
