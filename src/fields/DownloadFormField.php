@@ -108,7 +108,7 @@ class DownloadFormField extends Field
         $isMailChimpAvailable = $services->isMailChimpAvailable();
         $downloadAssetSource = $services->getDownloadAssetSource();
         $settings = DownloadForm::getInstance()->getSettings();
-        $globalMailChimpListId = $settings['mailChimpList'];
+        $globalMailChimpAudienceId = $settings['mailChimpList'];
 
         // Variables to pass down to our field JavaScript to let it namespace properly
         $jsonVars = [
@@ -131,7 +131,7 @@ class DownloadFormField extends Field
                 'namespacedId' => $namespacedId,
                 'isMailChimpAvailable' => $isMailChimpAvailable,
                 'downloadAssetSource' => $downloadAssetSource,
-                'globalMailChimpListId' => $globalMailChimpListId
+                'globalMailChimpAudienceId' => $globalMailChimpAudienceId
             ]
         );
     }

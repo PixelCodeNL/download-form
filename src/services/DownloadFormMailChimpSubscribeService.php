@@ -34,11 +34,11 @@ class DownloadFormMailChimpSubscribeService extends Component
             /** @var MailchimpSubscribeService $mailChimpSubscribeService */
             $mailChimpSubscribeService = MailchimpSubscribeService::instance();
             $settings = DownloadForm::getInstance()->getSettings();
-            $settingsListId = $settings['mailChimpList'];
-            $formListId = $request->mailChimpList;
-            $listId = !empty($formListId) ? $formListId : $settingsListId;
+            $settingsAudienceId = $settings['mailChimpList'];
+            $formAudienceId = $request->mailChimpList;
+            $audienceId = !empty($formAudienceId) ? $formAudienceId : $settingsAudienceId;
 
-            if ($listId) {
+            if ($audienceId) {
                 if ($mailChimpSubscribeService) {
                     $name = $request->name;
                     $nameParts = explode(' ', $name);
@@ -51,14 +51,16 @@ class DownloadFormMailChimpSubscribeService extends Component
                         }
                     }
 
-                    $vars = [
+                    $opts['merge_fields'] = [
                         'FNAME' => $firstName,
                         'LNAME' => $lastName
                     ];
-                    
-                    Craft::info(sprintf('Subscribe %s to list %s', $request->email, $listId), DownloadForm::LOGGER_CATEGORY);
 
-                    $result = $mailChimpSubscribeService->subscribe($request->email, $listId, 'html', $vars);
+                    $opts['tags'] = null;
+                    
+                    Craft::info(sprintf('Subscribe %s to list %s', $request->email, $audienceId), DownloadForm::LOGGER_CATEGORY);
+
+                    $result = $mailChimpSubscribeService->subscribe($request->email, $audienceId, $opts);
 
                     if (array_key_exists('success', $result) && !$result['success']) {
                         Craft::error(sprintf('Error in MailChimp subscription: %s', print_r($result, true)), DownloadForm::LOGGER_CATEGORY);
