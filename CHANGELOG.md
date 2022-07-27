@@ -7,3 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## 2.0.0 - 2019-03-11
 ### Added
 - Initial release
+
+## 3.1.4
+### Changed
+- Changes after updating from Craft 2 to Craft 3
