@@ -2,7 +2,7 @@
     "name": "pixelcode/download-form",
     "description": "Show a download form to download a custom file.",
     "type": "craft-plugin",
-    "version": "3.1.2",
+    "version": "3.1.4",
     "keywords": [
         "craft",
         "cms",
