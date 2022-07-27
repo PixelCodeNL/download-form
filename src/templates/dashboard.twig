@@ -55,7 +55,11 @@
                         </span>
                     </td>
                     <td>
-                        <a href="{{ downloadRequest.pageUrl }}" target="_blank" data-icon-after="rightangle" title="{{ 'Visit webpage' | t('download-form') }}">{{ ('Visit page' | t('download-form')) }}&nbsp;&nbsp;</a>
+                        {% if downloadRequest.pageUrl is defined and downloadRequest.pageUrl is not empty %}
+                            <a href="{{ downloadRequest.pageUrl }}" target="_blank" data-icon-after="rightangle" title="{{ 'Visit webpage' | t('download-form') }}">{{ ('Visit page' | t('download-form')) }}&nbsp;&nbsp;</a>
+                        {% else %}
+                            -
+                        {% endif %}
                     </td>
                     <td>
                         <a href="{{ downloadRequest.file }}" target="_blank">

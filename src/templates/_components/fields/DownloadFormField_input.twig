@@ -99,7 +99,7 @@
                     name: name ~ '[file]',
                     elementType: 'craft\\elements\\Asset',
                     limit: 1,
-                    elements: value.file is defined and value.file is not empty ? craft.assets.id(value.file[0]).all() : null,
+                    elements: value.file is defined and value.file is not empty ? craft.assets.id(value.file).all() : null,
                     criteria: { volumeId: downloadAssetSource.id }
                 }) }}
             </div>

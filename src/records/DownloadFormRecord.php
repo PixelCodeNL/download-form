@@ -39,6 +39,7 @@ class DownloadFormRecord extends ActiveRecord
     public $name = '';
     public $email = '';
     public $entry = '';
+    public $pageUrl = '';
     public $mailChimpSubscribe = false;
     public $mailChimpList = '';
     public $sessionId = '';
